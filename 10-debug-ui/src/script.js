@@ -5,18 +5,37 @@ import gsap from 'gsap'
 import * as dat from 'lil-gui'
 
 /**
+ * lil-gui hide panel
+ */
+window.addEventListener('keydown', (event)=>{
+    if (event.key === 'h'){
+        if(gui._hidden)
+            gui.show()
+        else
+            gui.hide()
+    }
+})
+
+/**
  * Debug
  */
-const gui = new dat.GUI()
+const gui = new dat.GUI({ closed: true, width: 400 })
+gui.open(gui._closed)
 const parameters = {
-    color: 0xff0000
+    color: 0xff0000,
+    spin: ()=>{
+        gsap.to(mesh.rotation, {duration: 1, y: mesh.rotation.y + 10})
+    }
 }
 
 gui
     .addColor(parameters, 'color')
     .onChange(()=>{
-        console.log('tweak did change')
+        material.color.set(parameters.color)
     })
+
+gui
+    .add(parameters, 'spin')
 
 /**
  * Base
@@ -31,7 +50,7 @@ const scene = new THREE.Scene()
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+const material = new THREE.MeshBasicMaterial({ color: parameters.color })
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
