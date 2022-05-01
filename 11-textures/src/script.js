@@ -1,6 +1,19 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { Texture } from 'three'
+
+
+/**
+ * Textures
+ */
+const image = new Image()
+const texture = new THREE.Texture(image)
+
+image.onload = () => {
+    texture.needsUpdate = true
+}
+image.src = '/textures/door/color.jpg'
 
 /**
  * Base
