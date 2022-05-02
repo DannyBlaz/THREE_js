@@ -32,7 +32,7 @@ fontLoader.load(
     '/fonts/helvetiker_regular.typeface.json',
     (font) => {
         const textGeometry = new TextGeometry(
-            'Hello Three.js',
+            'Danny Blaze',
             {
                 font: font,
                 size: 0.5,
