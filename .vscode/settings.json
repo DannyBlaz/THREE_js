@@ -1,6 +1,13 @@
 {
     "git.ignoreLimitWarning": true,
     "cSpell.ignoreWords": [
-        "metalness"
+        "matcap",
+        "metalness",
+        "texture"
+    ],
+    "cSpell.words": [
+        "matcap",
+        "matcaps",
+        "texture"
     ]
 }
