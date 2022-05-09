@@ -1,5 +1,7 @@
 # Three.js Journey
 
+# To Update Web Content Run
+npm run deploy
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
 Run this followed commands:
