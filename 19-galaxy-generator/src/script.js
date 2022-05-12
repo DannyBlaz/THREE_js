@@ -7,7 +7,7 @@ import * as dat from 'lil-gui'
  * Base
  */
 // Debug
-const gui = new dat.GUI()
+const gui = new dat.GUI({ width: 360 })
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -16,14 +16,68 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
- * Test cube
+ * Galaxy
  */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-)
-scene.add(cube)
+const parameters = {}
+parameters.count = 1000
+parameters.size = 0.02
+parameters.radius = 5
+parameters.branches = 3
 
+let geometry = null
+let material = null
+let points = null
+
+const generateGalaxy = () => {
+
+    // Destroy old galaxy
+    if (points !== null) {
+        geometry.dispose()
+        material.dispose()
+        scene.remove(points)
+    }
+
+    /**
+     * Geometry
+     */
+    geometry = new THREE.BufferGeometry()
+    
+    const positions = new Float32Array(parameters.count * 3)
+    
+    for (let i = 0; i < parameters.count; i++) {
+        const i3 = i * 3
+
+        const radius = Math.random() * parameters.radius
+        
+        positions[i3] = radius
+        positions[i3 + 1] = 0
+        positions[i3 + 2] = 0
+    }
+    
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    
+    /**
+     * Material
+     */
+    material = new THREE.PointsMaterial({
+        size: parameters.size,
+        sizeAttenuation: true,
+        depthWrite: true,
+        blending: THREE.AdditiveBlending
+    })
+    
+    /**
+     * Points
+     */
+    points = new THREE.Points(geometry, material)
+    scene.add(points)
+}
+generateGalaxy()
+
+gui.add(parameters, 'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
+gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
+gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy)
+gui.add(parameters, 'branches').min(2).max(10).step(1).onFinishChange(generateGalaxy)
 /**
  * Sizes
  */
@@ -32,8 +86,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -75,8 +128,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const clock = new THREE.Clock()
 
-const tick = () =>
-{
+const tick = () => {
     const elapsedTime = clock.getElapsedTime()
 
     // Update controls
