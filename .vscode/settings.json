@@ -9,6 +9,7 @@
         "lerp",
         "matcap",
         "matcaps",
+        "raycaster",
         "texture"
     ]
 }
