@@ -37,13 +37,11 @@ object3.position.x = 2
 
 scene.add(object1, object2, object3)
 
+/**
+ * Raycaster
+ */
+
 const raycaster = new THREE.Raycaster()
-
-const rayOrigin = new THREE.Vector3(-3, 0, 0)
-const rayDirection = new THREE.Vector3(10, 0, 0)
-rayDirection.normalize()
-
-raycaster.set(rayOrigin, rayDirection)
 
 /**
  * Sizes
@@ -98,6 +96,29 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    //Animate object
+    object1.position.y = Math.sin(elapsedTime * 0.3) * 1.5
+    object2.position.y = Math.sin(elapsedTime * 0.6) * 1.5
+    object3.position.y = Math.sin(elapsedTime * 0.9) * 1.5
+
+    //cast ray
+    // const rayOrigin = new THREE.Vector3(-3, 0, 0)
+    // const rayDirection = new THREE.Vector3(1, 0, 0)
+    // rayDirection.normalize()
+
+    // raycaster.set(rayOrigin, rayDirection)
+
+    // const objectsToTest = [object1, object2, object3]
+    // const intersects = raycaster.intersectObjects(objectsToTest)
+    
+    // for (const object of objectsToTest) {
+    //     object.material.color.set('#ff0000')
+    // }
+
+    // for (const intersect of intersects) {
+    //     intersect.object.material.color.set('#0000ff')
+    // }
+    
     // Update controls
     controls.update()
 
