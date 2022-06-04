@@ -43,9 +43,7 @@ debugObject.wipe = () => {
         //Remove mesh
         scene.remove(object.mesh)
     }
-    console.log(objectsToUpdate);
     objectsToUpdate.splice(0, objectsToUpdate.length)
-    console.log(objectsToUpdate);
 }
 
 gui.add(debugObject, 'createSphere')
