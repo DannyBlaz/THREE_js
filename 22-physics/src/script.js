@@ -20,7 +20,37 @@ debugObject.createSphere = () => {
         }
     )
 }
+
+debugObject.createBox = () => {
+    createBox(
+        Math.random(),
+        Math.random(),
+        Math.random(),
+        {
+            x: Math.random() - 0.5 * 3,
+            y: 3,
+            z: Math.random() - 0.5 * 3
+        }
+    )
+}
+
+debugObject.wipe = () => {
+    for (const object of objectsToUpdate) {
+        //Remove Body
+        object.body.removeEventListener('collide', playHitSound)
+        world.removeBody(object.body)
+
+        //Remove mesh
+        scene.remove(object.mesh)
+    }
+    console.log(objectsToUpdate);
+    objectsToUpdate.splice(0, objectsToUpdate.length)
+    console.log(objectsToUpdate);
+}
+
 gui.add(debugObject, 'createSphere')
+gui.add(debugObject, 'createBox')
+gui.add(debugObject, 'wipe')
 
 /**
  * Base
@@ -30,6 +60,20 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Sounds
+ */
+const hitSound = new Audio('/sounds/hit.mp3')
+
+const playHitSound = (collision) => {
+    const impactStrength = collision.contact.getImpactVelocityAlongNormal()
+
+    if (impactStrength > 1.5) {
+        hitSound.currentTime = 0
+        hitSound.play()
+    }
+}
 
 /**
  * Textures
@@ -49,7 +93,10 @@ const environmentMapTexture = cubeTextureLoader.load([
 /**
  * Physics
  */
+//World
 const world = new CANNON.World()
+world.broadphase = new CANNON.SAPBroadphase(world)
+world.allowSleep = true
 world.gravity.set(0, -9.82, 0)
 
 //Material
@@ -214,6 +261,7 @@ const createSphere = (radius, position) => {
         material: defaultMaterial
     })
     body.position.copy(position)
+    body.addEventListener('collide', playHitSound)
     world.addBody(body)
 
     //Save in objects to update 
@@ -226,6 +274,7 @@ const createSphere = (radius, position) => {
 
 createSphere(0.5, { x: 0, y: 3, z: 0 })
 
+//Box
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const boxMaterial = new THREE.MeshStandardMaterial({
     roughness: 0.3,
@@ -234,26 +283,30 @@ const boxMaterial = new THREE.MeshStandardMaterial({
     envMapIntensity: 0.5
 })
 
-const createBox = (position) => {
+const createBox = (width, height, depth, position) => {
 
-    //Three.js
+    // Three.js mesh
     const mesh = new THREE.Mesh(boxGeometry, boxMaterial)
+    mesh.scale.set(width, height, depth)
     mesh.castShadow = true
     mesh.position.copy(position)
     scene.add(mesh)
 
-    Cannon.js
-    const box = new CANNON.Box()
+    // Cannon.js body
+    const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5))
     const body = new CANNON.Body({
         mass: 1,
-        position: new CANNON.Vec3(1, 3, 0),
+        position: new CANNON.Vec3(0, 3, 0),
         shape: shape,
         material: defaultMaterial
     })
-    // body.position.copy(position)
+    body.position.copy(position)
+    body.addEventListener('collide', playHitSound)
     world.addBody(body)
+
+    // Save in objects
+    objectsToUpdate.push({ mesh, body })
 }
-createBox({ x: 1, y: 3, z: 1 })
 
 /**
  * Animate
@@ -271,6 +324,7 @@ const tick = () => {
     world.step(1 / 60, deltaTime, 3)
     for (const object of objectsToUpdate) {
         object.mesh.position.copy(object.body.position)
+        object.mesh.quaternion.copy(object.body.quaternion)
     }
 
     // sphere.position.copy(sphereBody.position)
