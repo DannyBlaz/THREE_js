@@ -30,6 +30,11 @@ export default class Camera{
     }
 
     resize(){
-        console.log('camera resize');
+        this.instance.aspect = this.sizes.weight / this.sizes.height
+        this.instance.updateProjectionMatrix()
+    }
+
+    update(){
+        this.controls.update()
     }
 }
