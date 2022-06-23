@@ -10,7 +10,7 @@ import sources from './sources.js'
 let instance = null
 export default class Experience {
     constructor(canvas) {
-        if (instance){
+        if (instance) {
             return instance
         }
         instance = this
@@ -47,8 +47,9 @@ export default class Experience {
         this.renderer.resize()
     }
 
-    update(){
+    update() {
         this.camera.update()
-        this.renderer.update() 
+        this.world.update()
+        this.renderer.update()
     }
 }
