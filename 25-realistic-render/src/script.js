@@ -60,7 +60,7 @@ gui.add(debugObject, 'envMapIntensity').min(0).max(10).step(0.001).onChange(upda
  * Models
  */
 gltfLoader.load(
-    '/models/hamburger.glb',
+    '/models/Mustang.glb',
     (gltf) => {
         gltf.scene.scale.set(0.3, 0.3, 0.3)
         gltf.scene.position.set(0, -1, 0)
