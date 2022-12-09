@@ -3,11 +3,16 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 /**
  * Loader
  */
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco')
+
 const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 /**
@@ -60,8 +65,9 @@ gui.add(debugObject, 'envMapIntensity').min(0).max(10).step(0.001).onChange(upda
  * Models
  */
 gltfLoader.load(
-    '/models/Mustang.glb',
+    '/models/hamburger.glb',
     (gltf) => {
+        console.log(gltf.scene);
         gltf.scene.scale.set(0.3, 0.3, 0.3)
         gltf.scene.position.set(0, -1, 0)
         gltf.scene.rotation.y = Math.PI * 0.5
